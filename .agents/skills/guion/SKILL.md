@@ -1,8 +1,10 @@
-description = "Escribe o ajusta el guion de un contenido con la voz de la cuenta"
-prompt = """
-Contenido: {{args}}
+---
+name: guion
+description: Escribe o ajusta el guion de un contenido con la voz de la cuenta
+---
+
+Contenido: lo que la persona escribió después del comando
 `python -m cs ver <id>`. Si la idea no está aprobada, avísale y para.
 Lee de la cuenta: `estilo.md`, `estructuras.md`, `que-funciona.md`; y `reglas/retencion.md`, `reglas/voz-humana.md`; y la investigación del contenido.
 Escribe en `guion/guion.md`: estructura usada arriba, guion dicho (con su voz y sus muletillas reales), texto en pantalla, imágenes de apoyo que hacen falta, copy y hashtags. Revisa las reglas de retención con ✅/⚠️.
 Muéstraselo y espera su aprobación (`python -m cs aprobar <id> guion` solo si ella lo dice). Luego `python -m cs sync -m "guion <id>"`.
-"""

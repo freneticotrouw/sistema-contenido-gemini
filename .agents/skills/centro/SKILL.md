@@ -1,0 +1,6 @@
+---
+name: centro
+description: Abre el Centro de contenido en el navegador
+---
+
+Corre `python -m cs centro` en segundo plano y dile la dirección para el computador y la del celular (misma wifi).

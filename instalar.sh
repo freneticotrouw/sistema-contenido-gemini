@@ -71,20 +71,22 @@ print("   ffmpeg listo (vía pip)")
 PY
 fi
 
-echo "3/4 Gemini CLI..."
-if falta gemini; then
-  if [ -d "$LOCAL/node" ]; then npm install -g --prefix "$LOCAL/node" @google/gemini-cli
-  else npm install -g @google/gemini-cli || sudo npm install -g @google/gemini-cli; fi
+echo "3/4 Antigravity CLI (el asistente de Gemini en la terminal)..."
+if falta agy; then
+  curl -fsSL https://antigravity.google/cli/install.sh | bash < /dev/null
+  export PATH="$HOME/.local/bin:$HOME/.antigravity/bin:$PATH"
 fi
 
 echo "4/4 Carpeta del sistema..."
-if [ ! -d "$DESTINO" ]; then
-  tmp="$(mktemp -d)"
-  curl -fsSL "https://github.com/$REPO/archive/refs/heads/main.zip" -o "$tmp/s.zip"
-  unzip -q "$tmp/s.zip" -d "$tmp" && mv "$tmp/sistema-contenido-gemini-main" "$DESTINO"
-else
-  echo "   Ya existe $DESTINO (no se toca)."
-fi
+tmp="$(mktemp -d)"
+curl -fsSL "https://github.com/$REPO/archive/refs/heads/main.zip" -o "$tmp/s.zip"
+unzip -q "$tmp/s.zip" -d "$tmp"
+mkdir -p "$DESTINO"
+# Copia o actualiza el sistema sin tocar lo de la persona (cuentas, workspace, datos)
+(cd "$tmp/sistema-contenido-gemini-main" && find . -type f ! -path "./cuentas/*" ! -path "./workspace/*" ! -path "./datos/*" \
+  -exec sh -c 'mkdir -p "$1/$(dirname "$2")" && cp "$2" "$1/$2"' _ "$DESTINO" {} \;)
+mkdir -p "$DESTINO/cuentas" "$DESTINO/workspace"
+rm -rf "$DESTINO/.gemini" "$DESTINO/gemini-extension.json"
 
 # Rutas y atajo 'mi-contenido' para las próximas veces
 PYBIN="$(python3 -c 'import site,os; print(os.path.join(site.getuserbase(),"bin"))')"
@@ -94,13 +96,13 @@ for rc in "$HOME/.zshrc" "$HOME/.bashrc"; do
   grep -q "# sistema-contenido" "$rc" || cat >> "$rc" <<EOF
 
 # sistema-contenido
-export PATH="$LOCAL/bin:$LOCAL/node/bin:$PYBIN:/Library/Frameworks/Python.framework/Versions/3.12/bin:\$PATH"
-alias mi-contenido='cd "$DESTINO" && gemini'
+export PATH="$LOCAL/bin:$HOME/.antigravity/bin:$LOCAL/node/bin:$PYBIN:/Library/Frameworks/Python.framework/Versions/3.12/bin:\$PATH"
 EOF
+  grep -q "&& agy'" "$rc" || echo "alias mi-contenido='cd \"$DESTINO\" && agy'" >> "$rc"
 done
 export PATH="$PYBIN:$PATH"
 
 echo
 echo "Listo. Inicia sesión con tu cuenta de Google (la de tu suscripción), no con API key."
 echo "Luego escribe /empezar. La próxima vez abre la Terminal y escribe: mi-contenido"
-cd "$DESTINO" && exec gemini < /dev/tty
+cd "$DESTINO" && exec agy < /dev/tty

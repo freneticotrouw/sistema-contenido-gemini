@@ -1,5 +1,8 @@
-description = "Configura una cuenta nueva y aprende su estilo a partir de sus videos"
-prompt = """
+---
+name: empezar
+description: Configura una cuenta nueva y aprende su estilo a partir de sus videos
+---
+
 Guía a la persona paso a paso, una pregunta a la vez y en frases cortas:
 1. Nombre de la cuenta o marca y un nombre corto para la carpeta (sin espacios).
 2. Usuario de Instagram y de TikTok (los que tenga).
@@ -7,5 +10,4 @@ Guía a la persona paso a paso, una pregunta a la vez y en frases cortas:
 4. Opcional: de 1 a 5 referentes (cuentas que admira).
 Luego corre `python -m cs cuenta-nueva <carpeta> --nombre "<nombre>" --instagram <usuario> --tiktok <usuario>` y completa `perfil.md` y `referentes.md` con lo que dijo.
 Después sigue con lo mismo que hace /analizar para esa cuenta.
-Respuestas de la persona hasta ahora: {{args}}
-"""
+Respuestas de la persona hasta ahora: lo que la persona escribió después del comando

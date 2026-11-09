@@ -1,5 +1,0 @@
-description = "Vuelve a leer las cuentas y actualiza qué funciona"
-prompt = """
-Cuenta: {{args}}
-`python -m cs descargar <cuenta> --solo-datos` (trae vistas y copys sin bajar videos) y `python -m cs muestras <cuenta>`. Usa el agente `analista` para comparar con la vez anterior y actualizar `que-funciona.md` (qué subir, qué dejar). Guarda un informe corto en `cuentas/<cuenta>/informes/<fecha>.md` y resume en 5 líneas. Luego `python -m cs sync -m "metricas <cuenta>"`.
-"""

@@ -1,8 +1,10 @@
-description = "Edita el video de un contenido en 3 pasos con aprobación"
-prompt = """
-Contenido: {{args}}
+---
+name: editar
+description: Edita el video de un contenido en 3 pasos con aprobación
+---
+
+Contenido: lo que la persona escribió después del comando
 1. `python -m cs ver <id>` para ver en qué paso va. Pasos: cortes → imagenes → video (subtítulos).
 2. `python -m cs preparar <id>`: crea el manifiesto del paso siguiente con el video, las imágenes, el guion, `marca.json` y `edicion.md`. Si dice que faltan fotos para el paso de imágenes, pídeselas y para.
-3. Encarga el trabajo al agente `editor-video` con ese manifiesto y `reglas/edicion-tecnica.md`.
+3. Encarga el trabajo a la skill `editor-video` con ese manifiesto y `reglas/edicion-tecnica.md`.
 4. Revisa la salida (transcripción en el paso de cortes, SDR y -14 LUFS siempre) y dile dónde quedó el video. Espera su aprobación: `python -m cs aprobar <id> <paso>` solo si ella lo dice. Si pide ajustes, apúntalos en `edicion.md` de la cuenta y rehaz.
-"""

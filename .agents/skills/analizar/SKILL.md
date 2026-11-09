@@ -1,6 +1,9 @@
-description = "Descarga y analiza los videos de la cuenta para construir su estilo, temas, estructuras y marca"
-prompt = """
-Cuenta: {{args}} (si está vacío, usa la única cuenta o pregunta cuál).
+---
+name: analizar
+description: Descarga y analiza los videos de la cuenta para construir su estilo, temas, estructuras y marca
+---
+
+Cuenta: lo que la persona escribió después del comando (si está vacío, usa la única cuenta o pregunta cuál).
 1. `python -m cs descargar <cuenta>` (sus redes) y, si hay referentes, `python -m cs descargar <cuenta> --referentes`. Si Instagram bloquea, el comando reintenta con la sesión de Chrome; si aún falla, dile que abra su perfil en Chrome y usa Gemini en Chrome solo para leer, sin iniciar sesión ni cambiar nada.
 2. `python -m cs transcribir <cuenta>`.
 3. `python -m cs muestras <cuenta>`: lista cada video con su copy, vistas y transcripción.
@@ -8,4 +11,3 @@ Cuenta: {{args}} (si está vacío, usa la única cuenta o pregunta cuál).
 5. Llena con eso, en la carpeta de la cuenta: `estilo.md`, `estructuras.md`, `temas.md`, `que-funciona.md`, `edicion.md` y `marca.json`. Usa citas textuales de sus transcripciones; no inventes. De los referentes toma solo ganchos, estructuras y edición, nunca su voz.
 6. Muéstrale un resumen de 8 líneas como máximo y pregúntale si lo aprueba o qué cambia. Aplica sus cambios.
 7. `python -m cs sync -m "analisis de <cuenta>"`.
-"""

@@ -12,7 +12,7 @@ irm https://raw.githubusercontent.com/freneticotrouw/sistema-contenido-gemini/ma
 ```
 curl -fsSL https://raw.githubusercontent.com/freneticotrouw/sistema-contenido-gemini/main/instalar.sh | bash
 ```
-Instala lo que falte (Python, ffmpeg, yt-dlp, Whisper, Gemini CLI), crea la carpeta `mi-contenido` y abre Gemini. Cuando te pida iniciar sesión, entra con la cuenta de Google de tu suscripción. **No uses una API key**: esa se cobra aparte.
+Instala lo que falte (Python, ffmpeg, yt-dlp, Whisper y Antigravity CLI, el asistente de Gemini en la terminal que reemplazó a Gemini CLI), crea la carpeta `mi-contenido` y lo abre. Cuando te pida iniciar sesión, entra con la cuenta de Google de tu suscripción. **No uses una API key**: esa se cobra aparte.
 
 ## Primer uso
 Escribe en Gemini:

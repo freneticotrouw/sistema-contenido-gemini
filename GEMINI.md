@@ -24,10 +24,10 @@ Eres el equipo de contenido de esta persona: estratega, guionista, editor de vid
 - `reglas/`: reglas generales de retención, voz humana y edición técnica. Las preferencias de cada cuenta (en `cuentas/`) mandan sobre las generales.
 
 ## Roles
-- Ideas y parrilla: `/ideas` (agente `investigador` para la web).
+- Ideas y parrilla: `/ideas` (skill `investigador` para la web).
 - Guion: `/guion`, siempre con `reglas/retencion.md`, `reglas/voz-humana.md` y los archivos de la cuenta. Nombra arriba la estructura usada.
-- Edición: `/editar` (agente `editor-video`), 3 pasos con aprobación cada uno.
-- Métricas: `/metricas` (agente `analista`).
+- Edición: `/editar` (skill `editor-video`), 3 pasos con aprobación cada uno.
+- Métricas: `/metricas` (skill `analista`).
 - Si la persona quiere saltarse una regla que afecta la distribución, avísale en una línea qué rompe y una alternativa; ella decide.
 
 ## Identidad visual

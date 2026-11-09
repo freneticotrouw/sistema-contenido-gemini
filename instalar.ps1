@@ -17,8 +17,8 @@ $env:Path = [Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [Env
 Write-Host "2/4 Herramientas de video y transcripcion (gratis, locales)..."
 python -m pip install --upgrade --quiet yt-dlp faster-whisper
 
-Write-Host "3/4 Gemini CLI..."
-if (Falta gemini) { npm install -g @google/gemini-cli }
+Write-Host "3/4 Antigravity CLI..."
+if (Falta agy) { irm https://antigravity.google/cli/install.ps1 | iex }
 
 Write-Host "4/4 Carpeta del sistema..."
 if (-not (Test-Path $Destino)) {
@@ -31,10 +31,10 @@ if (-not (Test-Path $Destino)) {
 # Atajo: escribir 'mi-contenido' en PowerShell abre el sistema
 if (-not (Test-Path $PROFILE)) { New-Item -ItemType File -Path $PROFILE -Force | Out-Null }
 if (-not (Select-String -Path $PROFILE -Pattern "function mi-contenido" -Quiet)) {
-  Add-Content $PROFILE "`nfunction mi-contenido { Set-Location '$Destino'; gemini }"
+  Add-Content $PROFILE "`nfunction mi-contenido { Set-Location '$Destino'; agy }"
 }
 
 Write-Host "`nListo. Inicia sesion con tu cuenta de Google (la de tu suscripcion), no con API key."
 Write-Host "Luego escribe /empezar. La proxima vez basta con escribir: mi-contenido`n"
 Set-Location $Destino
-gemini
+agy
