@@ -37,12 +37,19 @@ if [ "$(uname)" = "Darwin" ]; then
     rm -rf "$LOCAL/node" && mkdir -p "$LOCAL/node"
     tar -xzf /tmp/node.tgz -C "$LOCAL/node" --strip-components 1
   fi
-  if falta ffmpeg; then
+  if falta ffmpeg || falta ffprobe; then
     echo "   Instalando ffmpeg..."
+    [ "$ARCH" = "arm64" ] && MR="arm64" || MR="amd64"
     for p in ffmpeg ffprobe; do
-      curl -fsSL "https://evermeet.cx/ffmpeg/getrelease/$p/zip" -o "/tmp/$p.zip"
-      unzip -o -q "/tmp/$p.zip" -d "$LOCAL/bin" && chmod +x "$LOCAL/bin/$p"
-      xattr -d com.apple.quarantine "$LOCAL/bin/$p" 2>/dev/null || true
+      ok=""
+      for url in "https://ffmpeg.martin-riedl.de/redirect/latest/macos/$MR/release/$p.zip" \
+                 "https://evermeet.cx/ffmpeg/getrelease/$p/zip"; do
+        if curl -fsSL "$url" -o "/tmp/$p.zip" 2>/dev/null && unzip -o -q "/tmp/$p.zip" -d "$LOCAL/bin" 2>/dev/null; then
+          chmod +x "$LOCAL/bin/$p"; xattr -d com.apple.quarantine "$LOCAL/bin/$p" 2>/dev/null || true
+          "$LOCAL/bin/$p" -version >/dev/null 2>&1 && ok=1 && break
+        fi
+      done
+      [ -n "$ok" ] || echo "   (no se pudo bajar $p directo; se intenta por pip más abajo)"
     done
   fi
 else
@@ -52,6 +59,17 @@ fi
 echo "2/4 Herramientas de video y transcripción (gratis, locales)..."
 python3 -m pip install --user --upgrade --quiet yt-dlp faster-whisper \
   || python3 -m pip install --user --break-system-packages --upgrade --quiet yt-dlp faster-whisper
+
+if falta ffmpeg || falta ffprobe; then
+  python3 -m pip install --user --upgrade --quiet static-ffmpeg && python3 - <<'PY'
+import os, shutil, static_ffmpeg.run as r
+ff, fp = r.get_or_fetch_platform_executables_else_raise()
+dst = os.path.expanduser("~/.local/bin")
+for f in (ff, fp):
+    shutil.copy(f, os.path.join(dst, os.path.basename(f))); os.chmod(os.path.join(dst, os.path.basename(f)), 0o755)
+print("   ffmpeg listo (vía pip)")
+PY
+fi
 
 echo "3/4 Gemini CLI..."
 if falta gemini; then
