@@ -16,9 +16,13 @@ py_ok() { command -v python3 >/dev/null 2>&1 && python3 -c 'import sys; sys.exit
 echo "1/4 Programas necesarios..."
 if [ "$(uname)" = "Darwin" ]; then
   ARCH="$(uname -m)"; [ "$ARCH" = "arm64" ] || ARCH="x64"
+  MACOS="$(sw_vers -productVersion | cut -d. -f1)"
+  [ "$MACOS" -lt 11 ] && NODE_V="v20.18.0"   # macOS 10.15 o anterior
   if ! xcode-select -p >/dev/null 2>&1; then
     echo "   Se abrirá una ventana para instalar las herramientas de Apple (incluye git)."
-    echo "   Acéptala, espera a que termine y vuelve a pegar el comando de instalación."
+    echo ""
+    echo "   >>> IMPORTANTE: cuando termine esa ventana, VUELVE A PEGAR el comando de instalación. <<<"
+    echo "   (Esta primera vuelta solo instala las herramientas de Apple; el resto va en la segunda.)"
     xcode-select --install || true
     exit 0
   fi
