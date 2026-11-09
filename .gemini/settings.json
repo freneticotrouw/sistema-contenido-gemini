@@ -1,0 +1,4 @@
+{
+  "context": { "fileName": ["GEMINI.md"] },
+  "tools": { "allowed": ["run_shell_command(python -m cs)", "run_shell_command(ffmpeg)", "run_shell_command(ffprobe)", "run_shell_command(yt-dlp)", "run_shell_command(git)"] }
+}

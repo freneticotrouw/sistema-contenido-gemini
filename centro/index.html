@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Centro de contenido</title>
+<style>
+  :root { --fondo:#f6f6f4; --tarjeta:#fff; --texto:#1d1d1b; --suave:#6b6b66; --borde:#e2e2dc; --acento:#1d1d1b; }
+  @media (prefers-color-scheme: dark) { :root { --fondo:#151514; --tarjeta:#1f1f1d; --texto:#eeeeea; --suave:#a3a39c; --borde:#33332f; --acento:#eeeeea; } }
+  * { box-sizing:border-box; }
+  body { margin:0; font:16px/1.5 system-ui, sans-serif; background:var(--fondo); color:var(--texto); }
+  main { max-width:760px; margin:0 auto; padding:16px; }
+  h1 { font-size:22px; margin:8px 0 16px; }
+  select { font:inherit; padding:6px; border-radius:8px; border:1px solid var(--borde); background:var(--tarjeta); color:var(--texto); }
+  .c { background:var(--tarjeta); border:1px solid var(--borde); border-radius:12px; padding:14px; margin:12px 0; }
+  .t { font-weight:600; }
+  .s { color:var(--suave); font-size:14px; }
+  pre { white-space:pre-wrap; font:14px/1.5 system-ui, sans-serif; max-height:320px; overflow:auto; background:var(--fondo); padding:10px; border-radius:8px; }
+  button { font:inherit; padding:8px 12px; border-radius:8px; border:1px solid var(--acento); background:var(--acento); color:var(--fondo); margin:6px 6px 0 0; cursor:pointer; }
+  button.sec { background:transparent; color:var(--texto); }
+  video { width:100%; max-height:420px; border-radius:8px; margin-top:8px; background:#000; }
+  details summary { cursor:pointer; margin-top:8px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Centro de contenido</h1>
+  <label class="s">Cuenta <select id="cuenta"><option value="">Todas</option></select></label>
+  <div id="lista"></div>
+</main>
+<script>
+const NOMBRES = {idea:"Aprobar idea", guion:"Aprobar guion", grabado:"Grabar", en_carpeta:"Dejar video en la carpeta",
+  cortes:"Paso 1: cortes", imagenes:"Paso 2: imágenes", video:"Paso 3: subtítulos", publicacion:"Publicar"};
+const APROBABLES = ["idea","guion","cortes","imagenes","video","publicacion"];
+let estado = {contenidos:[], cuentas:[]};
+
+async function cargar() {
+  estado = await (await fetch("/api/estado")).json();
+  const sel = document.getElementById("cuenta"), actual = sel.value;
+  sel.innerHTML = '<option value="">Todas</option>' + estado.cuentas.map(c => `<option>${c}</option>`).join("");
+  sel.value = actual;
+  pintar();
+}
+
+async function accion(d) {
+  await fetch("/api/accion", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(d)});
+  cargar();
+}
+
+function boton(txt, fn, sec) {
+  const b = document.createElement("button"); b.textContent = txt; b.onclick = fn; if (sec) b.className = "sec"; return b;
+}
+
+function pintar() {
+  const cuenta = document.getElementById("cuenta").value, lista = document.getElementById("lista");
+  lista.innerHTML = "";
+  const items = estado.contenidos.filter(c => !cuenta || c.cuenta === cuenta).reverse();
+  if (!items.length) lista.innerHTML = '<p class="s">Aún no hay contenidos. Pídele ideas a Gemini con /ideas.</p>';
+  for (const c of items) {
+    const div = document.createElement("div"); div.className = "c";
+    const sig = c.siguiente;
+    div.innerHTML = `<div class="t"></div><div class="s"></div>`;
+    div.querySelector(".t").textContent = c.titulo;
+    div.querySelector(".s").textContent = `${c.cuenta} · ${sig ? "Falta: " + NOMBRES[sig] : "Terminado"}`;
+    if (c.guion) {
+      const det = document.createElement("details"), sum = document.createElement("summary"), pre = document.createElement("pre");
+      sum.textContent = "Ver guion"; pre.textContent = c.guion; det.append(sum, pre); div.append(det);
+    }
+    const ultimo = ["video","imagenes","cortes"].map(p => (c.videos[p]||[]).slice(-1)[0]).find(Boolean);
+    if (ultimo) { const v = document.createElement("video"); v.controls = true; v.src = "/" + ultimo; div.append(v); }
+    const caja = document.createElement("div");
+    if (sig && APROBABLES.includes(sig) && sig !== "publicacion") {
+      caja.append(boton("Aprobar", () => accion({id:c.id, tipo:"aprobar", paso:sig})));
+      caja.append(boton("Pedir ajustes", () => { const n = prompt("¿Qué cambio?"); if (n) accion({id:c.id, tipo:"ajustes", paso:sig, nota:n}); }, true));
+    }
+    if (sig === "grabado") caja.append(boton("Ya lo grabé", () => accion({id:c.id, tipo:"grabado"})));
+    if (sig === "en_carpeta") caja.append(boton("Ya está en la carpeta", () => accion({id:c.id, tipo:"en_carpeta"})));
+    if (sig === "publicacion") caja.append(boton("Ya lo publiqué", () => { const u = prompt("Enlace de la publicación"); if (u) accion({id:c.id, tipo:"publicado", url:u}); }));
+    div.append(caja); lista.append(div);
+  }
+}
+document.getElementById("cuenta").onchange = pintar;
+cargar(); setInterval(cargar, 15000);
+</script>
+</body>
+</html>

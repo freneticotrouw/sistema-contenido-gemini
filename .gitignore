@@ -1,0 +1,7 @@
+workspace/**/assets/
+workspace/**/edicion/
+cuentas/*/muestras/
+__pycache__/
+*.mp4
+*.mov
+*.MOV
